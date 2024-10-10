@@ -1,9 +1,11 @@
 import zmq
 import pygame
 import sys
+import time
 
 # Inizializza Pygame
 pygame.init()
+print("Finito")
 
 # Configura il contesto ZeroMQ
 context = zmq.Context()
@@ -14,14 +16,25 @@ socket.connect("tcp://127.0.0.1:5556")
 screen = pygame.display.set_mode((400, 300))
 pygame.display.set_caption("Controllo Arduino da Tastiera")
 
+def increase_speed(speed):
+    if speed < 9:
+        speed += 1
+    return speed
+
+def decrease_speed(speed):
+    if speed > 4:
+        speed -= 1
+    return speed
+
 def send_command(command):
     """Invia un comando al server via ZeroMQ"""
     socket.send_string(command)
     response = socket.recv_string()
-    print(f"Risposta dal server: {response}")
-
 # Ciclo principale
 running = True
+speed = 6
+stop = True
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -29,28 +42,23 @@ while running:
             pygame.quit()
             sys.exit()
 
-        # Controllo degli input da tastiera
+    # Controllo evento KEYDOWN per quando si preme un tasto
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 send_command("left")  # Gira a sinistra
-            elif event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_RIGHT:
                 send_command("right")  # Gira a destra
-            elif event.key == pygame.K_UP:
-                send_command("on")  # Accende il motore
-            elif event.key == pygame.K_DOWN:
-                send_command("off")  # Spegne il motore
-            elif event.key == pygame.K_4:
-                send_command("4")  # Velocità 4
-            elif event.key == pygame.K_5:
-                send_command("5")  # Velocità 5
-            elif event.key == pygame.K_6:
-                send_command("6")  # Velocità 6
-            elif event.key == pygame.K_7:
-                send_command("7")  # Velocità 7
-            elif event.key == pygame.K_8:
-                send_command("8")  # Velocità 8
-            elif event.key == pygame.K_9:
-                send_command("9")  # Velocità 9
+            if event.key == pygame.K_UP:
+                speed = increase_speed(speed)
+                send_command(str(speed))  # Accende il motore
+            if event.key == pygame.K_DOWN:
+                speed = decrease_speed(speed)
+                send_command(str(speed))  # Diminuisce la velocità
+
+        # Controllo evento KEYUP per quando si rilascia un tasto
+        if event.type == pygame.KEYUP:
+            if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]:
+                send_command("S")  # Spegne il motore
 
 # Chiudi il socket
 socket.close()

@@ -25,31 +25,30 @@ print("Server in ascolto per i comandi dei client...")
 
 # Avvia un thread per leggere dalla porta seriale
 threading.Thread(target=read_from_serial, daemon=True).start()
+oldMessage = -1
 
 while True:
     message = socket.recv_string()
-    print(f"Comando ricevuto: {message}")
+    if message != oldMessage:
+        oldMessage = message
+        if message.isnumeric():
+            print(f"Velocita' aggiornata a: {message}")
+        else:
+            print(f"Comando ricevuto: {message}")
 
-    if message == "on":
-        arduino.write(b'1')
-        socket.send_string("Motorino acceso")
-    elif message == "off":
-        arduino.write(b'0')
-        socket.send_string("Motorino spento")
-    elif message == "left":
+    if message == "left":
         arduino.write(b'L')
-        socket.send_string("Motorino gira a sinistra")
     elif message == "right":
         arduino.write(b'R')
-        socket.send_string("Motorino gira a destra")
     elif message.isdigit():  # Se riceviamo un numero, lo consideriamo come la velocità
         arduino.write(message.encode())  # Invia il numero come stringa ad Arduino
-        socket.send_string(f"Velocità impostata a {int(message) * 25}")
+    elif message == "S":
+        arduino.write(b'S')
     elif message == "exit":
-        print("Chiusura del server...")
         break
     else:
         socket.send_string("Comando non riconosciuto")
+    socket.send_string(f"Comando '{message}' ricevuto")
 
 arduino.close()
 socket.close()
