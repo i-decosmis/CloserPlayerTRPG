@@ -2,6 +2,7 @@ import zmq
 import pygame
 import sys
 import time
+import ctypes
 
 # Inizializza Pygame
 pygame.init()
@@ -11,9 +12,10 @@ context = zmq.Context()
 socket = None
 connected = False  # Stato della connessione
 connection_message = "Non connesso"
+last_command = ""  # Variabile per memorizzare l'ultimo comando eseguito
 
 # Imposta la finestra di Pygame
-screen = pygame.display.set_mode((400, 300))
+screen = pygame.display.set_mode((400, 300))  # Finestra senza bordi
 pygame.display.set_caption("Controllo Arduino da Tastiera")
 
 # Definisce alcuni colori in stile minimal
@@ -38,7 +40,6 @@ cursor_visible = True  # Indica se il cursore lampeggiante è visibile
 # Funzione per disegnare il pulsante
 def draw_button(button_rect, text, active=False):
     """Disegna un pulsante in stile minimal."""
-    # Colore diverso se il pulsante è attivo (hover)
     button_color = ACCENT_COLOR if active else LIGHT_GRAY
     pygame.draw.rect(screen, button_color, button_rect, border_radius=10)  # Pulsante con bordi arrotondati
     text_surface = font.render(text, True, WHITE)
@@ -46,48 +47,54 @@ def draw_button(button_rect, text, active=False):
     screen.blit(text_surface, text_rect)
 
 # Funzione per disegnare l'interfaccia
-def draw_interface(mouse_pos, cursor_visible):
+def draw_interface(mouse_pos):
     """Disegna l'interfaccia grafica."""
     screen.fill(WHITE)
-    
-    # Colore diverso per il bordo dell'input box quando è attivo (cliccato)
-    input_color = ACTIVE_COLOR if active_input else LIGHT_GRAY
-    pygame.draw.rect(screen, input_color, input_box, border_radius=10, width=2)  # Bordo arrotondato e più spesso se attivo
 
-    # Disegna il testo all'interno del campo di input
-    txt_surface = font.render(ip_text, True, BLACK)
-    screen.blit(txt_surface, (input_box.x + 10, input_box.y + 10))
+    if connected:  # Se connesso, mostra solo l'ultimo comando
+        last_command_surface = font.render(f"{last_command}", True, BLACK)
+        screen.blit(last_command_surface, (10, 13))
+    else:
+        # Colore diverso per il bordo dell'input box quando è attivo
+        input_color = ACTIVE_COLOR if active_input else LIGHT_GRAY
+        pygame.draw.rect(screen, input_color, input_box, border_radius=10, width=2)  # Bordo arrotondato e più spesso se attivo
 
-    # Aggiunge il cursore lampeggiante se il campo di input è attivo
-    if active_input and cursor_visible:
-        cursor_surface = font.render('|', True, BLACK)
-        cursor_x = input_box.x + 10 + txt_surface.get_width() + 2  # Posizione del cursore alla fine del testo
-        screen.blit(cursor_surface, (cursor_x, input_box.y + 5))
+        # Disegna il testo all'interno del campo di input
+        txt_surface = font.render(ip_text, True, BLACK)
+        screen.blit(txt_surface, (input_box.x + 10, input_box.y + 10))
 
-    # Messaggio di stato connessione
-    status_surface = font.render(connection_message, True, DARK_GRAY if not connected else ACCENT_COLOR)
-    screen.blit(status_surface, (20, 260))
+        # Aggiunge il cursore lampeggiante se il campo di input è attivo
+        if active_input and cursor_visible:
+            cursor_surface = font.render('|', True, BLACK)
+            cursor_x = input_box.x + 10 + txt_surface.get_width() + 2  # Posizione del cursore alla fine del testo
+            screen.blit(cursor_surface, (cursor_x, input_box.y + 5))
 
-    # Disegna il pulsante di connessione con effetto hover
-    draw_button(connect_button, "Connetti", active=connect_button.collidepoint(mouse_pos))
+        # Messaggio di stato connessione
+        status_surface = font.render(connection_message, True, DARK_GRAY if not connected else ACCENT_COLOR)
+        screen.blit(status_surface, (20, 260))
+
+        # Disegna il pulsante di connessione con effetto hover
+        draw_button(connect_button, "Connetti", active=connect_button.collidepoint(mouse_pos))
 
     pygame.display.flip()
 
 def send_command(command):
-    """Invia un comando al server via ZeroMQ se connesso."""
+    """Invia un comando al server via ZeroMQ se connesso.""" 
     if connected:
         socket.send_string(command)
         response = socket.recv_string()
+        return response
 
 def try_connect(ip_address):
-    """Prova a connettersi al server tramite l'indirizzo IP fornito."""
-    global socket, connected, connection_message
+    """Prova a connettersi al server tramite l'indirizzo IP fornito.""" 
+    global socket, connected, connection_message, last_command
     try:
         # Prova a creare una connessione
         socket = context.socket(zmq.REQ)
         socket.connect(f"tcp://{ip_address}:5556")
         connected = True
         connection_message = "Connesso"
+        pygame.display.set_mode((200, 50))  # Ridimensiona la finestra
     except Exception as e:
         connected = False
         connection_message = f"Errore: {str(e)}"
@@ -121,9 +128,8 @@ while running:
                 active_input = False  # Disattiva se clicca fuori dal box
             
             # Controlla se si clicca sul pulsante di connessione
-            if connect_button.collidepoint(event.pos):
-                if not connected:  # Permetti di connettersi solo se non già connesso
-                    try_connect(ip_text)  # Prova a connettersi quando clicca sul pulsante
+            if connect_button.collidepoint(event.pos) and not connected:
+                try_connect(ip_text)  # Prova a connettersi quando clicca sul pulsante
 
         if event.type == pygame.KEYDOWN:
             if active_input:
@@ -137,22 +143,27 @@ while running:
         # Controllo per i comandi del robot se connessi
         if connected and event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
+                last_command = "Sinistra"  # Memorizza l'ultimo comando
                 send_command("left")  # Gira a sinistra
             if event.key == pygame.K_RIGHT:
+                last_command = "Destra"  # Memorizza l'ultimo comando
                 send_command("right")  # Gira a destra
             if event.key == pygame.K_UP:
                 speed = min(9, speed + 1)
+                last_command = f"Velocità: {speed}"  # Memorizza l'ultimo comando
                 send_command(str(speed))  # Aumenta la velocità
             if event.key == pygame.K_DOWN:
                 speed = max(4, speed - 1)
+                last_command = f"Velocità: {speed}"  # Memorizza l'ultimo comando
                 send_command(str(speed))  # Diminuisce la velocità
 
         if connected and event.type == pygame.KEYUP:
             if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]:
+                last_command = "Fermo"  # Memorizza l'ultimo comando
                 send_command("S")  # Ferma il movimento
 
     # Aggiorna l'interfaccia grafica
-    draw_interface(mouse_pos, cursor_visible)
+    draw_interface(mouse_pos)
 
 # Chiudi il socket quando il programma termina
 if socket:
