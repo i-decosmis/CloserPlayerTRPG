@@ -1,3 +1,18 @@
+# This file is part of CloserPlayerTRPG.
+#
+# CloserPlayerTRPG is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# CloserPlayerTRPG is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import zmq
 import serial
 import time
@@ -5,146 +20,146 @@ import threading
 import pygame
 import sys
 
-# Funzione per leggere dalla porta seriale
+# Function to read from the serial port
 def read_from_serial():
     while True:
         if arduino.in_waiting > 0:
             line = arduino.readline().decode('utf-8').rstrip()
-            print(f"Messaggio da Arduino: {line}")
+            print(f"Message from Arduino: {line}")
 
-# Funzione per avviare il server ZMQ
+# Function to start the ZMQ server
 def start_server(ip_address):
     global server_running, oldMessage
 
     try:
-        # Crea il contesto ZeroMQ
+        # Create the ZeroMQ context
         context = zmq.Context()
 
-        # Crea un socket di tipo REQ/REP
+        # Create a REQ/REP type socket
         socket = context.socket(zmq.REP)
         socket.bind(f"tcp://{ip_address}:5556")
 
-        print(f"Server in ascolto su {ip_address}:5556...")
+        print(f"Server listening on {ip_address}:5556...")
 
-        # Avvia un thread per leggere dalla porta seriale
+        # Start a thread to read from the serial port
         threading.Thread(target=read_from_serial, daemon=True).start()
 
         while server_running:
             try:
-                message = socket.recv_string(flags=zmq.NOBLOCK)  # Non bloccare, controlla costantemente
+                message = socket.recv_string(flags=zmq.NOBLOCK)  # Non-blocking, constantly checking
                 if message != oldMessage:
                     oldMessage = message
-                    update_last_command(message)  # Aggiorna l'interfaccia
+                    update_last_command(message)  # Update the interface
                     if message.isnumeric():
-                        print(f"Velocita' aggiornata a: {message}")
+                        print(f"Speed updated to: {message}")
                     else:
-                        print(f"Comando ricevuto: {message}")
+                        print(f"Command received: {message}")
 
                 if message == "left":
                     arduino.write(b'L')
                 elif message == "right":
                     arduino.write(b'R')
-                elif message.isdigit():  # Se riceviamo un numero, lo consideriamo come la velocità
-                    arduino.write(message.encode())  # Invia il numero come stringa ad Arduino
+                elif message.isdigit():  # If we receive a number, we consider it as speed
+                    arduino.write(message.encode())  # Send the number as a string to Arduino
                 elif message == "S":
                     arduino.write(b'S')
                 elif message == "exit":
                     break
                 else:
-                    socket.send_string("Comando non riconosciuto")
-                socket.send_string(f"Comando '{message}' ricevuto")
-            except zmq.Again:  # Non ci sono messaggi disponibili
+                    socket.send_string("Unrecognized command")
+                socket.send_string(f"Command '{message}' received")
+            except zmq.Again:  # No messages available
                 pass
 
         arduino.close()
         socket.close()
         context.term()
-        print("Server chiuso.")
+        print("Server closed.")
     except Exception as e:
-        print(f"Errore: {e}")
+        print(f"Error: {e}")
 
-# Aggiorna l'ultimo comando ricevuto sull'interfaccia
+# Update the last received command on the interface
 def update_last_command(command):
     global last_command
     last_command = command
 
-# Inizializza Pygame
+# Initialize Pygame
 pygame.init()
 
-# Imposta la finestra di Pygame
+# Set up the Pygame window
 screen = pygame.display.set_mode((500, 400))
-pygame.display.set_caption("Server Controllo Arduino")
+pygame.display.set_caption("Arduino Control Server")
 
-# Definisce alcuni colori in stile minimal
+# Define some minimal style colors
 WHITE = (245, 245, 245)
 BLACK = (20, 20, 20)
 LIGHT_GRAY = (200, 200, 200)
 GRAY = (170, 170, 170)
 DARK_GRAY = (50, 50, 50)
-ACCENT_COLOR = (0, 150, 136)  # Colore primario per i pulsanti (verde acqua)
-ACTIVE_COLOR = (0, 200, 180)  # Colore del bordo quando il campo è attivo
+ACCENT_COLOR = (0, 150, 136)  # Primary color for buttons (teal)
+ACTIVE_COLOR = (0, 200, 180)  # Border color when the field is active
 
-# Imposta il font
+# Set the font
 font = pygame.font.Font(None, 36)
 
-# Variabili per l'interfaccia
+# Variables for the interface
 input_box = pygame.Rect(50, 50, 400, 40)
-ip_text = ''  # Testo inserito per l'IP
-start_button = pygame.Rect(150, 120, 200, 50)  # Pulsante per avviare il server
-stop_button = pygame.Rect(150, 190, 200, 50)  # Pulsante per chiudere il server
-active_input = False  # Indica se il campo di input è attivo (focus)
-server_running = False  # Indica se il server è attivo
-last_command = "Nulla"
+ip_text = ''  # Text entered for the IP
+start_button = pygame.Rect(150, 120, 200, 50)  # Button to start the server
+stop_button = pygame.Rect(150, 190, 200, 50)  # Button to close the server
+active_input = False  # Indicates whether the input field is active (focus)
+server_running = False  # Indicates whether the server is active
+last_command = "None"
 
-# Funzione per disegnare il pulsante
+# Function to draw the button
 def draw_button(button_rect, text, active=False):
-    """Disegna un pulsante in stile minimal."""
+    """Draws a button in minimal style."""
     button_color = ACCENT_COLOR if active else LIGHT_GRAY
     pygame.draw.rect(screen, button_color, button_rect, border_radius=10)
     text_surface = font.render(text, True, WHITE)
     text_rect = text_surface.get_rect(center=button_rect.center)
     screen.blit(text_surface, text_rect)
 
-# Funzione per disegnare l'interfaccia
+# Function to draw the interface
 def draw_interface(mouse_pos):
-    """Disegna l'interfaccia grafica."""
+    """Draws the graphical interface."""
     screen.fill(WHITE)
     
-    # Disegna l'input box per l'IP
+    # Draw the input box for the IP
     input_color = ACTIVE_COLOR if active_input else LIGHT_GRAY
     pygame.draw.rect(screen, input_color, input_box, border_radius=10, width=2)
 
-    # Disegna il testo all'interno del campo di input
+    # Draw the text inside the input field
     txt_surface = font.render(ip_text, True, BLACK)
     screen.blit(txt_surface, (input_box.x + 10, input_box.y + 10))
 
-    # Messaggio di stato
-    status_text = "Server in esecuzione" if server_running else "Server non attivo"
+    # Status message
+    status_text = "Server running" if server_running else "Server not active"
     status_surface = font.render(status_text, True, DARK_GRAY)
 
-    # Ottieni le dimensioni del testo e il rettangolo associato
-    status_rect = status_surface.get_rect(center=(screen.get_width() // 2, 260))  # Centra orizzontalmente a y=260
+    # Get the size of the text and the associated rectangle
+    status_rect = status_surface.get_rect(center=(screen.get_width() // 2, 260))  # Center horizontally at y=260
 
-    # Disegna il testo centrato
+    # Draw the centered text
     screen.blit(status_surface, status_rect)
 
-    # Ultimo comando ricevuto
-    last_command_surface = font.render(f"Ultimo comando: {last_command}", True, DARK_GRAY)
+    # Last command received
+    last_command_surface = font.render(f"Last command: {last_command}", True, DARK_GRAY)
     screen.blit(last_command_surface, (20, 350))
 
-    # Disegna i pulsanti
-    draw_button(start_button, "Avvia Server", active=start_button.collidepoint(mouse_pos))
-    draw_button(stop_button, "Chiudi Server", active=stop_button.collidepoint(mouse_pos))
+    # Draw the buttons
+    draw_button(start_button, "Start Server", active=start_button.collidepoint(mouse_pos))
+    draw_button(stop_button, "Stop Server", active=stop_button.collidepoint(mouse_pos))
 
     pygame.display.flip()
 
-# Ciclo principale
+# Main loop
 running = True
 arduino = None
 oldMessage = -1
 
 while running:
-    mouse_pos = pygame.mouse.get_pos()  # Ottieni la posizione del mouse
+    mouse_pos = pygame.mouse.get_pos()  # Get mouse position
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -160,14 +175,14 @@ while running:
             else:
                 active_input = False
             
-            # Avvia il server
+            # Start the server
             if start_button.collidepoint(event.pos) and not server_running:
                 arduino = serial.Serial('COM5', 9600, timeout=1)
                 time.sleep(2)
                 server_running = True
                 threading.Thread(target=start_server, args=(ip_text,), daemon=True).start()
             
-            # Chiudi il server
+            # Close the server
             if stop_button.collidepoint(event.pos) and server_running:
                 server_running = False
 
@@ -180,9 +195,9 @@ while running:
                 else:
                     ip_text += event.unicode
 
-    # Disegna l'interfaccia
+    # Draw the interface
     draw_interface(mouse_pos)
 
-# Chiude il server e il contesto ZeroMQ alla fine
+# Close the server and the ZeroMQ context at the end
 if arduino:
     arduino.close()
