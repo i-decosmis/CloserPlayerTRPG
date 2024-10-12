@@ -37,9 +37,9 @@ def start_server(ip_address):
 
         # Create a REQ/REP type socket
         socket = context.socket(zmq.REP)
-        socket.bind(f"tcp://{ip_address}:5556")
+        socket.bind(f"tcp://{ip_address}")
 
-        print(f"Server listening on {ip_address}:5556...")
+        print(f"Server listening on {ip_address}...")
 
         # Start a thread to read from the serial port
         threading.Thread(target=read_from_serial, daemon=True).start()

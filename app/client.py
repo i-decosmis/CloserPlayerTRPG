@@ -104,7 +104,7 @@ def try_connect(ip_address):
     try:
         # Try to create a connection
         socket = context.socket(zmq.REQ)
-        socket.connect(f"tcp://{ip_address}:5556")
+        socket.connect(f"tcp://{ip_address}")
         connected = True
         connection_message = "Connected"
         pygame.display.set_mode((200, 50))  # Resize the window
