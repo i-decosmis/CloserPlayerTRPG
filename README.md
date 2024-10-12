@@ -9,12 +9,11 @@
 
 </div>
 
-# Introduction 💻
-Project that aims to reduce the feeling of remoteness for people playing hybrid TRPGs online (some players in person and one online for now).
+# Introduction 🐉
+This project aims to reduce the feeling of remoteness for people playing hybrid TRPGs online (some players in person and one online for now).
 The basic idea is giving the remote player the opportunity to easily interact with the environment during the session.
 
-# First Idea 🐉
-The first idea is to use a `client-server` application to remotely control a rotating platform, where a portable computer or tablet can be placed to display the remote player. 
+The idea is to use a `client-server` application to remotely control a rotating platform, where a portable computer or tablet can be placed to display the remote player. 
 The remote player can control the rotating platform from their computer. 
 This concept is based on using a video-call communication app like Discord. 
 In this way, the remote player can look around and interact more effectively with other players.
@@ -90,6 +89,11 @@ Guide coming soon.
 
 ## Issues 🆘
 Nothing for now
+
+# To do 📝
+* Link arduino to the rotatin platform
+* 3d print a structure for vertical rotation
+* Provide a guide for the Hardware aspect of the project
 
 # Future Ideas 💡
 * Provide the remote player with the opportunity to physically roll a die using a robotic hand.
