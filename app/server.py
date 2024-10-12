@@ -55,10 +55,14 @@ def start_server(ip_address):
                     else:
                         print(f"Command received: {message}")
 
-                if message == "left":
-                    arduino.write(b'L')
+                if message == "up":
+                    arduino.write(b'U')
+                elif message == "down":
+                    arduino.write(b'D')
                 elif message == "right":
                     arduino.write(b'R')
+                elif message == "left":
+                    arduino.write(b'L')
                 elif message.isdigit():  # If we receive a number, we consider it as speed
                     arduino.write(message.encode())  # Send the number as a string to Arduino
                 elif message == "S":

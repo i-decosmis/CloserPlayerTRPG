@@ -155,23 +155,29 @@ while running:
 
         # Check for robot commands if connected
         if connected and event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                last_command = "Left"  # Store the last command
-                send_command("left")  # Turn left
+            if event.key == pygame.K_UP:
+                last_command = "Up"  # Store the last command
+                send_command("up")  # Turn up
+            if event.key == pygame.K_DOWN:
+                last_command = "Down"  # Store the last command
+                send_command("down")  # Turn down
             if event.key == pygame.K_RIGHT:
                 last_command = "Right"  # Store the last command
                 send_command("right")  # Turn right
-            if event.key == pygame.K_UP:
+            if event.key == pygame.K_LEFT:
+                last_command = "Left"  # Store the last command
+                send_command("left")  # Turn left
+            if event.key == pygame.K_1:
                 speed = min(9, speed + 1)
                 last_command = f"Speed: {speed}"  # Store the last command
                 send_command(str(speed))  # Increase speed
-            if event.key == pygame.K_DOWN:
+            if event.key == pygame.K_2:
                 speed = max(4, speed - 1)
                 last_command = f"Speed: {speed}"  # Store the last command
                 send_command(str(speed))  # Decrease speed
 
         if connected and event.type == pygame.KEYUP:
-            if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]:
+            if event.key in [pygame.K_1, pygame.K_2, pygame.K_UP, pygame.K_DOWN]:
                 last_command = "Stop"  # Store the last command
                 send_command("S")  # Stop movement
 

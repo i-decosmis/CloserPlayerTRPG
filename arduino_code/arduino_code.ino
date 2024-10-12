@@ -36,21 +36,25 @@ void loop() {
   if (Serial.available() > 0) {
     char command = Serial.read();  // Read the command
 
-    if (command == 'L') {
+    if (command == 'U') {
       if (lastCommand != command) {
         lastCommand = command;
       }
-      digitalWrite(in1, LOW);  // Turn counter-clockwise
+      digitalWrite(in1, LOW);  // Up
       digitalWrite(in2, HIGH);
-    } else if (command == 'R') {
+    } else if (command == 'D') {
       if (lastCommand != command) {
         lastCommand = command;
       }
-      digitalWrite(in1, HIGH);  // Turn clockwise
+      digitalWrite(in1, HIGH);  // Down
       digitalWrite(in2, LOW);
     } else if (isdigit(command)) {  // Command to change speed (0-9)
       speed = (command - '0') * 25;  // Multiply to get a value between 0 and 255
       analogWrite(en, speed);
+    } else if (command == 'R'){
+      // set output for rotating right
+    } else if (command == 'L'){
+      // set output for rotating left
     } else if (command == 'S'){
       if (lastCommand != command) {
         lastCommand = command;
