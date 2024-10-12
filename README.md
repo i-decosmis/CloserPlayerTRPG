@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="logo/logo.png" alt="Logo" width="350">
+<img src="other/logo/logo.png" alt="Logo" width="350">
 
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
@@ -26,7 +26,7 @@ The client will be used by the remote player and will be used to control the rot
 
 ## Installation of Requirements 🔧
 * Install Anaconda.
-* Navigate in the utils folder.
+* Navigate in the `other/utils` folder.
 * Run the following command: 
 ```bash
 conda env create --file environment.yml --name CloserPlayerTRPG
@@ -84,8 +84,43 @@ pyinstaller --onefile --windowed server.py
 ## Router port ❌
 To avoid opening router ports, use app like Tailscale or Hamachi.
 
-# Hardware 🛠️
-Guide coming soon.
+# Hardware (WIP) 🛠️
+## Components used:
+* [Mcbazel - 360° Rotating Stand](https://www.amazon.it/dp/B09FZ36N3M?ref=ppx_yo2ov_dt_b_fed_asin_title).
+* [Arduino Nano Clone](https://www.amazon.it/dp/B0CWH4P152?ref=ppx_yo2ov_dt_b_fed_asin_title).
+* [Breadboard](https://www.amazon.it/dp/B078HV79XX?ref=ppx_yo2ov_dt_b_fed_asin_title).
+
+## Steps
+### Adapting the Rotating Stand
+* Remove the top lid:
+<img src="other/images/1.jpg" alt="One" width="350">
+<img src="other/images/2.jpg" alt="Two" width="350">
+
+* Unplug the motor from the motherboard.
+* Remove the motor and motherboard from the case, and cut the wires connected to the battery holders:
+<img src="other/images/10.jpg" alt="Four" width="350">
+<img src="other/images/11.jpg" alt="Four" width="350">
+
+### Remove the useful components from the motherboard
+
+* Cut the ULN2003 component and desolder the motor connector:
+<img src="other/images/3.jpg" alt="Three" width="350">
+
+* Cut the battery holders to create more space inside the case. I used my soldering iron for this.:
+<img src="other/images/4.jpg" alt="Four" width="350">
+
+* Use double-sided tape to attach the removed component to the breadboard:
+<img src="other/images/5.jpg" alt="Five" width="350">
+
+* Use a soldering iron to connect the ULN2003 to the motor connector, referring to the following schematic for guidance:
+<img src="other/images/7.png" alt="Six" width="350">
+<img src="other/images/6.jpg" alt="Six" width="350">
+
+* Use a soldering iron to connect the Arduino Nano to the ULN2003, referring to the following schemaric for guidance:
+<img src="other/images/8.png" alt="Six" width="350">
+<img src="other/images/9.jpg" alt="Six" width="350">
+
+
 
 ## Issues 🆘
 Nothing for now
