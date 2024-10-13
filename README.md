@@ -153,11 +153,12 @@ To avoid opening router ports, use app like Tailscale or Hamachi.
     * Open Hamachi 
     * Create a new network, e.g. `CloserTest`:
     <img src="other/images/19.png" alt="Nineteen" width="350">
-    
+
     * Open the server application
     * Insert the highlighted Ip from your Hamachi and a port of your choise, e.g. `5556`.
     * Select on the top right the comunication port of the connected arduino:
     <img src="other/images/21.png" alt="Twentyone" width="350">
+    
     * Click `Start Server`
 * On the client pc:
     * Open Hamachi.
