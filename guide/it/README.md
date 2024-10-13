@@ -6,7 +6,7 @@ Il client sarà utilizzato dal giocatore remoto per controllare la piattaforma r
 
 ## Installazione dei requisiti 🔧
 * Installa Anaconda.
-* Vai nella cartella `../../other/utils`.
+* Vai nella cartella `other/utils`.
 * Esegui il seguente comando:
 ```bash
 conda env create --file environment.yml --name CloserPlayerTRPG
