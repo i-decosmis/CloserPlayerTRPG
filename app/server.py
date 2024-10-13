@@ -19,6 +19,8 @@ import time
 import threading
 import pygame
 import sys
+from serial.tools import list_ports
+
 
 # Function to read from the serial port
 def read_from_serial():
@@ -26,6 +28,16 @@ def read_from_serial():
         if arduino.in_waiting > 0:
             line = arduino.readline().decode('utf-8').rstrip()
             print(f"Message from Arduino: {line}")
+
+# Function to list available serial ports
+def get_serial_ports():
+    ports = list_ports.comports()
+    return [port.device for port in ports]
+
+serial_ports = get_serial_ports()  # List of available ports
+selected_port = None  # User-selected port
+show_ports = False  # Flag to show/hide the port selection menu
+
 
 # Function to start the ZMQ server
 def start_server(ip_address):
@@ -55,11 +67,7 @@ def start_server(ip_address):
                     else:
                         print(f"Command received: {message}")
 
-                if message == "up":
-                    arduino.write(b'U')
-                elif message == "down":
-                    arduino.write(b'D')
-                elif message == "right":
+                if message == "right":
                     arduino.write(b'R')
                 elif message == "left":
                     arduino.write(b'L')
@@ -118,11 +126,45 @@ last_command = "None"
 # Function to draw the button
 def draw_button(button_rect, text, active=False):
     """Draws a button in minimal style."""
-    button_color = ACCENT_COLOR if active else LIGHT_GRAY
+    button_color = LIGHT_GRAY if active else ACCENT_COLOR
     pygame.draw.rect(screen, button_color, button_rect, border_radius=10)
     text_surface = font.render(text, True, WHITE)
     text_rect = text_surface.get_rect(center=button_rect.center)
     screen.blit(text_surface, text_rect)
+
+# Function to draw the serial port selection menu
+def draw_serial_port_menu():
+    global show_ports, selected_port
+
+    if selected_port:
+        # If a port is selected, show the selected port and disable further selection
+        selected_port_surface = font.render(f"{selected_port}", True, DARK_GRAY)
+        screen.blit(selected_port_surface, (340, 10))
+    else:
+        # If no port is selected, show the "Select Port" button
+        select_port_button = pygame.Rect(340, 10, 150, 30)
+        pygame.draw.rect(screen, ACCENT_COLOR, select_port_button, border_radius=5)
+        select_port_surface = font.render("Select Port", True, WHITE)
+        screen.blit(select_port_surface, (select_port_button.x + 10, select_port_button.y + 5))
+
+        # Toggle the port menu when the button is clicked
+        if pygame.mouse.get_pressed()[0] and select_port_button.collidepoint(pygame.mouse.get_pos()):
+            show_ports = True
+
+    if show_ports and not selected_port:
+        # Display the available ports as a list
+        for i, port in enumerate(serial_ports):
+            port_rect = pygame.Rect(340, 50 + i * 40, 150, 30)
+            pygame.draw.rect(screen, LIGHT_GRAY, port_rect, border_radius=5)
+            port_surface = font.render(port, True, BLACK)
+            screen.blit(port_surface, (port_rect.x + 10, port_rect.y + 5))
+
+            # Check if a port was clicked
+            if pygame.mouse.get_pressed()[0] and port_rect.collidepoint(pygame.mouse.get_pos()):
+                selected_port = port  # Store the selected port
+                show_ports = False  # Hide the menu after selection
+
+
 
 # Function to draw the interface
 def draw_interface(mouse_pos):
@@ -140,11 +182,7 @@ def draw_interface(mouse_pos):
     # Status message
     status_text = "Server running" if server_running else "Server not active"
     status_surface = font.render(status_text, True, DARK_GRAY)
-
-    # Get the size of the text and the associated rectangle
     status_rect = status_surface.get_rect(center=(screen.get_width() // 2, 260))  # Center horizontally at y=260
-
-    # Draw the centered text
     screen.blit(status_surface, status_rect)
 
     # Last command received
@@ -153,9 +191,12 @@ def draw_interface(mouse_pos):
 
     # Draw the buttons
     draw_button(start_button, "Start Server", active=start_button.collidepoint(mouse_pos))
-    draw_button(stop_button, "Stop Server", active=stop_button.collidepoint(mouse_pos))
+
+    # Draw the serial port selection menu
+    draw_serial_port_menu()
 
     pygame.display.flip()
+
 
 # Main loop
 running = True
@@ -178,17 +219,13 @@ while running:
                 active_input = True
             else:
                 active_input = False
-            
-            # Start the server
-            if start_button.collidepoint(event.pos) and not server_running:
-                arduino = serial.Serial('COM5', 9600, timeout=1)
+
+            # Start the server only if a port is selected
+            if start_button.collidepoint(event.pos) and not server_running and selected_port:
+                arduino = serial.Serial(selected_port, 9600, timeout=1)
                 time.sleep(2)
                 server_running = True
                 threading.Thread(target=start_server, args=(ip_text,), daemon=True).start()
-            
-            # Close the server
-            if stop_button.collidepoint(event.pos) and server_running:
-                server_running = False
 
         if event.type == pygame.KEYDOWN:
             if active_input:
