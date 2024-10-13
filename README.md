@@ -41,11 +41,13 @@ To use the framework, you can run the file directly from the console or generate
 ## Run from console ⌨️
 * Navigate in the `app` folder.
 ### Client 🖥️
+* Navigate in the `client` folder.
 * Run:
 ```bash
 python client.py
 ```
 ### Server 🌐
+* Navigate in the `server` folder.
 * Run:
 ```bash
 python server.py
@@ -53,7 +55,7 @@ python server.py
 
 ## Exporting app for Windows
 ### Client 🖥️
-* Navigate in the `app` folder.
+* Navigate in the `app/client` folder.
 * Run the following command:
 ```bash
 pyinstaller --onefile --windowed client.py
@@ -61,7 +63,7 @@ pyinstaller --onefile --windowed client.py
 * In the dist folder you can find the exe file of the client.
 
 ### Server 🌐
-* Navigate in the `app` folder.
+* Navigate in the `app/server` folder.
 * Run the following command:
 ```bash
 pyinstaller --onefile --windowed server.py
