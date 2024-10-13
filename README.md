@@ -126,7 +126,6 @@ I've fused the two pieces togheter using a cyanoalicrate based glue.
 * I have used an externa webcam with integrated mic, I have also used a usb-c hub to connet the cam and arduino to the tablet as show in the figures:
 <img src="other/images/16.jpg" alt="Sixteen" width="350">
 <img src="other/images/17.jpg" alt="Seventeen" width="350">
-
 This general schema represent the final result:
 <img src="other/images/18.png" alt="Eighteen" width="350">
 
@@ -154,6 +153,7 @@ To avoid opening router ports, use app like Tailscale or Hamachi.
     * Open Hamachi 
     * Create a new network, e.g. `CloserTest`:
     <img src="other/images/19.png" alt="Nineteen" width="350">
+    
     * Open the server application
     * Insert the highlighted Ip from your Hamachi and a port of your choise, e.g. `5556`.
     * Select on the top right the comunication port of the connected arduino:
