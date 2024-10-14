@@ -105,7 +105,7 @@ I've fused the two pieces togheter using a cyanoalicrate based glue.
 
 ### Final result
 * Slide the tablet in the frame.
-* I have used an externa webcam with integrated mic, I have also used a usb-c hub to connet the cam and arduino to the tablet as show in the figures:
+* I have used an externa webcam with integrated mic, I have also used a usb-c hub, hotglued to the back of the plane, to connet the cam and arduino to the tablet as show in the figures:
 <img src="../../other/images/16.jpg" alt="Sixteen" width="350">
 <img src="../../other/images/17.jpg" alt="Seventeen" width="350">
 This general schema represent the final result:

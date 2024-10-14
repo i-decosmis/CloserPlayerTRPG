@@ -105,7 +105,7 @@ Ho unito i due pezzi usando una colla a base di cianoacrilato.
 
 ### Risultato finale
 * Inserisci il tablet nel supporto.
-* Ho usato una webcam esterna con microfono integrato e un hub USB-C per collegare la webcam e l'Arduino al tablet, come mostrato nelle immagini:
+* Ho usato una webcam esterna con microfono integrato e un hub USB-C, incollato con la colla a caldo sul retro del piano, per collegare la webcam e l'Arduino al tablet, come mostrato nelle immagini:
 <img src="../../other/images/16.jpg" alt="Sedici" width="350">
 <img src="../../other/images/17.jpg" alt="Diciassette" width="350">  
 Questo schema generale rappresenta il risultato finale:
