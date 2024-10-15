@@ -117,9 +117,13 @@ This improvements are optional but allow for a better cable management and pract
 <img src="../../other/images/23.jpg" alt="Twentythree" width="350">
 <img src="../../other/images/24.jpg" alt="Twentyfour" width="350">
 
-* My tablet can't stay on for the whole session, so it needs to be charged. In order not to add more cables I decided to change the power supply to 12V 2A and use a step down to 5V 5A and be able to power both the 28byj-48 and the tablet.
+* My tablet can't stay on for the whole session, so it needs to be charged. In order not to add more cables I decided to change the power supply to 12V 2A and use a [step down](https://www.amazon.it/dp/B07RGB2HB6?ref=ppx_yo2ov_dt_b_fed_asin_title) to 5V 5A and be able to power both the 28byj-48 and the tablet.
 * Updated general circuit:
 <img src="../../other/images/25.png" alt="Twentyfive" width="350">
+
+* To achieve a cleaner front appearance, I also added a 90-degree connector to the USB-C hub and another 90-degree connector for the tablet's charging port.
+<img src="../../other/images/26.jpg" alt="Twentyfive" width="350">
+<img src="../../other/images/27.jpg" alt="Twentyfive" width="350">
 
 # User Guide 📜
 ## Server 🌐
