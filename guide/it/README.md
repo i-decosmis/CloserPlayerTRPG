@@ -111,6 +111,12 @@ Ho unito i due pezzi usando una colla a base di cianoacrilato.
 Questo schema generale rappresenta il risultato finale:
 <img src="../../other/images/18.png" alt="Diciotto" width="350">
 
+### Miglioramenti 📈
+Questi miglioramenti sono opzionali, ma consentono una migliore gestione dei cavi e praticità:
+* Ho stampato in 3D una [piccola scatola](../../other/3D%20pieces/box.3mf) per conservare tutti i cavi all'interno.
+<img src="../../other/images/23.jpg" alt="Ventitré" width="350">
+<img src="../../other/images/24.jpg" alt="Ventiquattro" width="350">
+
 # Guida utente 📜
 ## Server 🌐
 * Apri il server.

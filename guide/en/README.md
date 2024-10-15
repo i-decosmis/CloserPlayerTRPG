@@ -111,6 +111,12 @@ I've fused the two pieces togheter using a cyanoalicrate based glue.
 This general schema represent the final result:
 <img src="../../other/images/18.png" alt="Eighteen" width="350">
 
+### Improvements 📈
+This improvements are optional but allow for a better cable management and practicality:
+* I have 3d printed a [small box](../../other/3D%20pieces/box.3mf) to store all the cables inside.
+<img src="../../other/images/23.jpg" alt="Twentythree" width="350">
+<img src="../../other/images/24.jpg" alt="Twentyfour" width="350">
+
 # User Guide 📜
 ## Server 🌐
 * Open the server.
