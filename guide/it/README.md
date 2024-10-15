@@ -117,6 +117,10 @@ Questi miglioramenti sono opzionali, ma consentono una migliore gestione dei cav
 <img src="../../other/images/23.jpg" alt="Ventitré" width="350">
 <img src="../../other/images/24.jpg" alt="Ventiquattro" width="350">
 
+* Ll mio tablet non riesce a stare acceso per tutta la durata di una sessione, quindi ha bisogno di essere caricato. Per non aggiungere altri cavi ho deciso di cambiare l'alimentazione in 12V 2A e utilizzare uno step down a 5V 5A e poter alimentare sia il 28byj-48 che il tablet.
+* Circuito generale aggiornato:
+<img src="../../other/images/25.png" alt="Twentyfive" width="350">
+
 # Guida utente 📜
 ## Server 🌐
 * Apri il server.
