@@ -117,9 +117,10 @@ Questi miglioramenti sono opzionali, ma consentono una migliore gestione dei cav
 <img src="../../other/images/23.jpg" alt="Ventitré" width="350">
 <img src="../../other/images/24.jpg" alt="Ventiquattro" width="350">
 
-* Il mio tablet non riesce a stare acceso per tutta la durata di una sessione, quindi ha bisogno di essere caricato. Per non aggiungere altri cavi ho deciso di cambiare l'alimentazione in 12V 2A e utilizzare uno [step down](https://www.amazon.it/dp/B07RGB2HB6?ref=ppx_yo2ov_dt_b_fed_asin_title) a 5V 5A e poter alimentare sia il 28byj-48 che il tablet.
+* Il mio tablet non riesce a rimanere acceso per tutta la sessione, quindi deve essere caricato. Per evitare di aggiungere altri cavi, ho deciso di cambiare l'alimentatore utilizzando un [caricatore multi-USB da 5V con due uscite da 5V e 3,1A](https://www.amazon.it/dp/B0D73DZ6QT?ref=ppx_yo2ov_dt_b_fed_asin_title). Ho saldato insieme le due uscite USB per alimentare sia il motore 28BYJ-48 che il tablet con un unico cavo.
 * Circuito generale aggiornato:
 <img src="../../other/images/25.png" alt="Twentyfive" width="350">
+Nota: Nel mio caso, il tablet aveva bisogno anche dei pin dati collegati, anche se il cavo è usato solo per la ricarica.
 * Per ottenere un aspetto frontale più pulito, ho anche aggiunto un connettore a 90 gradi all'hub USB-C e un altro connettore a 90 gradi per la porta di ricarica del tablet.
 <img src="../../other/images/26.jpg" alt="Twentyfive" width="350">
 <img src="../../other/images/27.jpg" alt="Twentyfive" width="350">
